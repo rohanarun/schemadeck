@@ -1,0 +1,813 @@
+{
+  "schemaVersion": 1,
+  "release": {
+    "productVersion": "0.1.0",
+    "backendRelease": "v0.4.2",
+    "backendCommit": "20c4a704c77cbbbff1da995e1d91b937625a8aa4",
+    "backendSourceSnapshotSha256": "d0b7b1079d4924eb7369c788a979a707d45bb63470290e6ac33ee5662d78f69f",
+    "generatedAt": "2026-08-24T00:00:00.000Z",
+    "generator": "managed-oss-cloud/scripts/generate-product-repositories.mjs"
+  },
+  "product": {
+    "slug": "schemadeck",
+    "command": "schemadeck",
+    "mcpPrefix": "schemadeck",
+    "environmentPrefix": "SCHEMADECK",
+    "name": "SchemaDeck",
+    "tagline": "Governed schemas, typed rows, deterministic views, and cited proposals in one shared data fabric.",
+    "repository": "https://github.com/rohanarun/schemadeck",
+    "license": "MIT",
+    "accent": "#62d6ba",
+    "accentDark": "#1c7863"
+  },
+  "module": {
+    "id": "tables",
+    "category": "Structured collaborative data",
+    "description": "Turn governed schemas, typed rows, deterministic views, and cited proposals into one shared workspace data fabric.",
+    "minimumHostedPlan": "starter",
+    "resourceClass": "shared",
+    "resourceRequirements": {
+      "class": "shared",
+      "minimumCpuMillicores": 150,
+      "minimumMemoryMiB": 256,
+      "includedStorageGb": 2,
+      "recommendedWorkerConcurrency": 2
+    },
+    "recordTypes": [
+      "table-base",
+      "table-field",
+      "table-row",
+      "table-view",
+      "ai-proposal-request",
+      "additive-command-receipt"
+    ],
+    "aiCapabilities": [
+      "Version-pinned schema proposals",
+      "Deterministic formulas",
+      "No model-applied row or schema changes"
+    ]
+  },
+  "backend": {
+    "defaultUrl": "https://cloud.getsupers.com",
+    "workspaceEndpoint": "/api/suite/workspace",
+    "actionEndpointPattern": "/api/suite/modules/tables/actions/{actionId}",
+    "authentication": "Bearer API token",
+    "databaseBoundary": "All shared database access and tenant isolation remain behind the managed-oss-cloud API."
+  },
+  "cleanRoom": {
+    "statement": "Original clean-room implementation of the structured collaborative data software category, designed and written independently.",
+    "sourceBoundary": "Public category behavior informed requirements; implementation and product identity are original."
+  },
+  "actions": [
+    {
+      "id": "base-create",
+      "moduleId": "tables",
+      "title": "Create governed base",
+      "description": "Create a shared base with an explicit purpose and stable key.",
+      "operation": "command",
+      "recordType": "table-base",
+      "requiredFields": [
+        "key",
+        "name",
+        "purpose",
+        "idempotencyKey"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "key",
+          "name",
+          "purpose",
+          "idempotencyKey"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "Stable lowercase base key."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "description": "Base name."
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "Bounded data purpose."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "key": "customers",
+        "name": "Customers",
+        "purpose": "Track opted-in customer facts",
+        "idempotencyKey": "tables.base-create.example-0001"
+      },
+      "requiredScope": "write",
+      "mcpToolName": "tables_base_create",
+      "cliExample": "supersuite action tables base-create '{\"key\":\"customers\",\"name\":\"Customers\",\"purpose\":\"Track opted-in customer facts\",\"idempotencyKey\":\"tables.base-create.example-0001\"}'",
+      "risk": "low",
+      "destructive": false,
+      "externalEffect": "none",
+      "idempotent": true,
+      "requiresApproval": false,
+      "supportsDryRun": false,
+      "minimumRole": "member",
+      "backendMcpToolName": "tables_base_create",
+      "productMcpToolName": "schemadeck_base_create",
+      "productCliExample": "schemadeck action base-create '{\"key\":\"customers\",\"name\":\"Customers\",\"purpose\":\"Track opted-in customer facts\",\"idempotencyKey\":\"tables.base-create.example-0001\"}'"
+    },
+    {
+      "id": "field-add",
+      "moduleId": "tables",
+      "title": "Add typed field",
+      "description": "Add a uniquely keyed typed field to one tenant-owned base.",
+      "operation": "command",
+      "recordType": "table-field",
+      "requiredFields": [
+        "baseId",
+        "key",
+        "label",
+        "fieldType",
+        "idempotencyKey"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "baseId",
+          "key",
+          "label",
+          "fieldType",
+          "idempotencyKey"
+        ],
+        "properties": {
+          "baseId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Base ID."
+          },
+          "key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "Stable lowercase field key."
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "description": "Field label."
+          },
+          "fieldType": {
+            "type": "string",
+            "enum": [
+              "text",
+              "number",
+              "boolean",
+              "date-time",
+              "relation"
+            ],
+            "description": "Field type."
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether a value is required for future rows."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "baseId": "00000000-0000-4000-8000-000000000100",
+        "key": "company",
+        "label": "Company",
+        "fieldType": "text",
+        "required": true,
+        "idempotencyKey": "tables.field-add.example-0001"
+      },
+      "requiredScope": "write",
+      "mcpToolName": "tables_field_add",
+      "cliExample": "supersuite action tables field-add '{\"baseId\":\"00000000-0000-4000-8000-000000000100\",\"key\":\"company\",\"label\":\"Company\",\"fieldType\":\"text\",\"required\":true,\"idempotencyKey\":\"tables.field-add.example-0001\"}'",
+      "risk": "low",
+      "destructive": false,
+      "externalEffect": "none",
+      "idempotent": true,
+      "requiresApproval": false,
+      "supportsDryRun": false,
+      "minimumRole": "member",
+      "backendMcpToolName": "tables_field_add",
+      "productMcpToolName": "schemadeck_field_add",
+      "productCliExample": "schemadeck action field-add '{\"baseId\":\"00000000-0000-4000-8000-000000000100\",\"key\":\"company\",\"label\":\"Company\",\"fieldType\":\"text\",\"required\":true,\"idempotencyKey\":\"tables.field-add.example-0001\"}'"
+    },
+    {
+      "id": "row-create",
+      "moduleId": "tables",
+      "title": "Create validated row",
+      "description": "Create a row only after validating values against the current tenant-owned schema.",
+      "operation": "command",
+      "recordType": "table-row",
+      "requiredFields": [
+        "baseId",
+        "values",
+        "idempotencyKey"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "baseId",
+          "values",
+          "idempotencyKey"
+        ],
+        "properties": {
+          "baseId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Base ID."
+          },
+          "values": {
+            "type": "object",
+            "description": "Values keyed by registered field key."
+          },
+          "sourceRecordIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "maxItems": 100,
+            "description": "Optional shared-database source records."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "baseId": "00000000-0000-4000-8000-000000000100",
+        "values": {
+          "company": "Northwind"
+        },
+        "sourceRecordIds": [],
+        "idempotencyKey": "tables.row-create.example-0001"
+      },
+      "requiredScope": "write",
+      "mcpToolName": "tables_row_create",
+      "cliExample": "supersuite action tables row-create '{\"baseId\":\"00000000-0000-4000-8000-000000000100\",\"values\":{\"company\":\"Northwind\"},\"sourceRecordIds\":[],\"idempotencyKey\":\"tables.row-create.example-0001\"}'",
+      "risk": "low",
+      "destructive": false,
+      "externalEffect": "none",
+      "idempotent": true,
+      "requiresApproval": false,
+      "supportsDryRun": false,
+      "minimumRole": "member",
+      "backendMcpToolName": "tables_row_create",
+      "productMcpToolName": "schemadeck_row_create",
+      "productCliExample": "schemadeck action row-create '{\"baseId\":\"00000000-0000-4000-8000-000000000100\",\"values\":{\"company\":\"Northwind\"},\"sourceRecordIds\":[],\"idempotencyKey\":\"tables.row-create.example-0001\"}'"
+    },
+    {
+      "id": "row-update",
+      "moduleId": "tables",
+      "title": "Update row with optimistic lock",
+      "description": "Apply a bounded patch after exact row-version and schema validation.",
+      "operation": "command",
+      "recordType": "table-row",
+      "requiredFields": [
+        "rowId",
+        "expectedVersion",
+        "patch",
+        "idempotencyKey"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "rowId",
+          "expectedVersion",
+          "patch",
+          "idempotencyKey"
+        ],
+        "properties": {
+          "rowId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Row ID."
+          },
+          "expectedVersion": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991,
+            "description": "Current row version."
+          },
+          "patch": {
+            "type": "object",
+            "description": "Field-value patch."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "rowId": "00000000-0000-4000-8000-000000000100",
+        "expectedVersion": 1,
+        "patch": {
+          "company": "Northwind Labs"
+        },
+        "idempotencyKey": "tables.row-update.example-0001"
+      },
+      "requiredScope": "write",
+      "mcpToolName": "tables_row_update",
+      "cliExample": "supersuite action tables row-update '{\"rowId\":\"00000000-0000-4000-8000-000000000100\",\"expectedVersion\":1,\"patch\":{\"company\":\"Northwind Labs\"},\"idempotencyKey\":\"tables.row-update.example-0001\"}'",
+      "risk": "low",
+      "destructive": false,
+      "externalEffect": "none",
+      "idempotent": true,
+      "requiresApproval": false,
+      "supportsDryRun": false,
+      "minimumRole": "member",
+      "backendMcpToolName": "tables_row_update",
+      "productMcpToolName": "schemadeck_row_update",
+      "productCliExample": "schemadeck action row-update '{\"rowId\":\"00000000-0000-4000-8000-000000000100\",\"expectedVersion\":1,\"patch\":{\"company\":\"Northwind Labs\"},\"idempotencyKey\":\"tables.row-update.example-0001\"}'"
+    },
+    {
+      "id": "view-create",
+      "moduleId": "tables",
+      "title": "Create deterministic view",
+      "description": "Persist a bounded sort and filter contract without executing arbitrary code.",
+      "operation": "command",
+      "recordType": "table-view",
+      "requiredFields": [
+        "baseId",
+        "name",
+        "filter",
+        "sort",
+        "idempotencyKey"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "baseId",
+          "name",
+          "filter",
+          "sort",
+          "idempotencyKey"
+        ],
+        "properties": {
+          "baseId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Base ID."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "description": "View name."
+          },
+          "filter": {
+            "type": "object",
+            "description": "Declarative equality filter."
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "maxItems": 20,
+            "description": "Ordered field and direction pairs."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "baseId": "00000000-0000-4000-8000-000000000100",
+        "name": "Companies",
+        "filter": {},
+        "sort": [
+          {
+            "field": "company",
+            "direction": "asc"
+          }
+        ],
+        "idempotencyKey": "tables.view-create.example-0001"
+      },
+      "requiredScope": "write",
+      "mcpToolName": "tables_view_create",
+      "cliExample": "supersuite action tables view-create '{\"baseId\":\"00000000-0000-4000-8000-000000000100\",\"name\":\"Companies\",\"filter\":{},\"sort\":[{\"field\":\"company\",\"direction\":\"asc\"}],\"idempotencyKey\":\"tables.view-create.example-0001\"}'",
+      "risk": "low",
+      "destructive": false,
+      "externalEffect": "none",
+      "idempotent": true,
+      "requiresApproval": false,
+      "supportsDryRun": false,
+      "minimumRole": "member",
+      "backendMcpToolName": "tables_view_create",
+      "productMcpToolName": "schemadeck_view_create",
+      "productCliExample": "schemadeck action view-create '{\"baseId\":\"00000000-0000-4000-8000-000000000100\",\"name\":\"Companies\",\"filter\":{},\"sort\":[{\"field\":\"company\",\"direction\":\"asc\"}],\"idempotencyKey\":\"tables.view-create.example-0001\"}'"
+    },
+    {
+      "id": "import-preview",
+      "moduleId": "tables",
+      "title": "Preview typed row import",
+      "description": "Validate a bounded row batch and return its exact hash without writing anything.",
+      "operation": "read",
+      "recordType": "table-row",
+      "requiredFields": [
+        "baseId",
+        "rows"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "baseId",
+          "rows"
+        ],
+        "properties": {
+          "baseId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Base ID."
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "maxItems": 500,
+            "description": "Rows to validate."
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "baseId": "00000000-0000-4000-8000-000000000100",
+        "rows": [
+          {
+            "company": "Northwind"
+          }
+        ]
+      },
+      "requiredScope": "read",
+      "mcpToolName": "tables_import_preview",
+      "cliExample": "supersuite action tables import-preview '{\"baseId\":\"00000000-0000-4000-8000-000000000100\",\"rows\":[{\"company\":\"Northwind\"}]}'",
+      "risk": "low",
+      "destructive": false,
+      "externalEffect": "none",
+      "idempotent": false,
+      "requiresApproval": false,
+      "supportsDryRun": false,
+      "minimumRole": "viewer",
+      "backendMcpToolName": "tables_import_preview",
+      "productMcpToolName": "schemadeck_import_preview",
+      "productCliExample": "schemadeck action import-preview '{\"baseId\":\"00000000-0000-4000-8000-000000000100\",\"rows\":[{\"company\":\"Northwind\"}]}'"
+    },
+    {
+      "id": "import-apply",
+      "moduleId": "tables",
+      "title": "Apply approved typed row import",
+      "description": "Persist the exact previewed batch only after attributed approval.",
+      "operation": "command",
+      "recordType": "table-row",
+      "requiredFields": [
+        "baseId",
+        "rows",
+        "previewHash",
+        "idempotencyKey",
+        "dryRun"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "baseId",
+          "rows",
+          "previewHash",
+          "idempotencyKey",
+          "dryRun"
+        ],
+        "properties": {
+          "baseId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Base ID."
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "maxItems": 500,
+            "description": "Exact previewed rows."
+          },
+          "previewHash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "Exact import preview hash."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "When true, validate and return a preview without persisting or performing the effect."
+          },
+          "approval": {
+            "type": "object",
+            "description": "Attributed human approval of the exact requested effect.",
+            "required": [
+              "approved",
+              "approvedBy",
+              "approvedAt",
+              "decisionId",
+              "reason"
+            ],
+            "properties": {
+              "approved": {
+                "const": true
+              },
+              "approvedBy": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "approvedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "decisionId": {
+                "type": "string",
+                "minLength": 16,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9._:-]{16,200}$"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "baseId": "00000000-0000-4000-8000-000000000100",
+        "rows": [
+          {
+            "company": "Northwind"
+          }
+        ],
+        "previewHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "idempotencyKey": "tables.import-apply.example-0001",
+        "dryRun": true
+      },
+      "requiredScope": "write",
+      "mcpToolName": "tables_import_apply",
+      "cliExample": "supersuite action tables import-apply '{\"baseId\":\"00000000-0000-4000-8000-000000000100\",\"rows\":[{\"company\":\"Northwind\"}],\"previewHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"idempotencyKey\":\"tables.import-apply.example-0001\",\"dryRun\":true}'",
+      "risk": "high",
+      "destructive": false,
+      "externalEffect": "none",
+      "idempotent": true,
+      "requiresApproval": true,
+      "supportsDryRun": true,
+      "minimumRole": "admin",
+      "backendMcpToolName": "tables_import_apply",
+      "productMcpToolName": "schemadeck_import_apply",
+      "productCliExample": "schemadeck action import-apply '{\"baseId\":\"00000000-0000-4000-8000-000000000100\",\"rows\":[{\"company\":\"Northwind\"}],\"previewHash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"idempotencyKey\":\"tables.import-apply.example-0001\",\"dryRun\":true}'"
+    },
+    {
+      "id": "formula-evaluate",
+      "moduleId": "tables",
+      "title": "Evaluate bounded aggregate",
+      "description": "Evaluate a deterministic count, sum, minimum, maximum, or average against tenant rows.",
+      "operation": "read",
+      "recordType": "table-row",
+      "requiredFields": [
+        "baseId",
+        "operation",
+        "fieldKey"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "baseId",
+          "operation",
+          "fieldKey"
+        ],
+        "properties": {
+          "baseId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Base ID."
+          },
+          "operation": {
+            "type": "string",
+            "enum": [
+              "count",
+              "sum",
+              "min",
+              "max",
+              "average"
+            ],
+            "description": "Supported aggregate."
+          },
+          "fieldKey": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Numeric field key; may be blank for count."
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "baseId": "00000000-0000-4000-8000-000000000100",
+        "operation": "count",
+        "fieldKey": ""
+      },
+      "requiredScope": "read",
+      "mcpToolName": "tables_formula_evaluate",
+      "cliExample": "supersuite action tables formula-evaluate '{\"baseId\":\"00000000-0000-4000-8000-000000000100\",\"operation\":\"count\",\"fieldKey\":\"\"}'",
+      "risk": "low",
+      "destructive": false,
+      "externalEffect": "none",
+      "idempotent": false,
+      "requiresApproval": false,
+      "supportsDryRun": false,
+      "minimumRole": "viewer",
+      "backendMcpToolName": "tables_formula_evaluate",
+      "productMcpToolName": "schemadeck_formula_evaluate",
+      "productCliExample": "schemadeck action formula-evaluate '{\"baseId\":\"00000000-0000-4000-8000-000000000100\",\"operation\":\"count\",\"fieldKey\":\"\"}'"
+    },
+    {
+      "id": "schema-propose",
+      "moduleId": "tables",
+      "title": "Queue grounded schema proposal",
+      "description": "Queue a cited schema-improvement proposal; it can never add fields or mutate rows itself.",
+      "operation": "ai",
+      "recordType": "ai-proposal-request",
+      "requiredFields": [
+        "baseId",
+        "goal",
+        "evidenceIds",
+        "idempotencyKey",
+        "dryRun"
+      ],
+      "engine": "additive",
+      "inputSchema": {
+        "type": "object",
+        "required": [
+          "baseId",
+          "goal",
+          "evidenceIds",
+          "idempotencyKey",
+          "dryRun"
+        ],
+        "properties": {
+          "baseId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Base ID."
+          },
+          "goal": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "description": "Schema question or desired outcome."
+          },
+          "evidenceIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "maxItems": 500,
+            "description": "Tenant-owned record IDs selected as evidence."
+          },
+          "modelId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Optional expected workspace-configured model identifier. When omitted, the trusted workspace policy is used; never a credential."
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 200,
+            "pattern": "^[A-Za-z0-9._:-]{16,200}$",
+            "description": "A retry-safe key unique to this logical mutation."
+          },
+          "dryRun": {
+            "type": "boolean",
+            "description": "When true, validate and return a preview without persisting or performing the effect."
+          },
+          "approval": {
+            "type": "object",
+            "description": "Attributed human approval of the exact requested effect.",
+            "required": [
+              "approved",
+              "approvedBy",
+              "approvedAt",
+              "decisionId",
+              "reason"
+            ],
+            "properties": {
+              "approved": {
+                "const": true
+              },
+              "approvedBy": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "approvedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "decisionId": {
+                "type": "string",
+                "minLength": 16,
+                "maxLength": 200,
+                "pattern": "^[A-Za-z0-9._:-]{16,200}$"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "exampleInput": {
+        "baseId": "00000000-0000-4000-8000-000000000100",
+        "goal": "Propose a minimal customer-health field set.",
+        "evidenceIds": [
+          "00000000-0000-4000-8000-000000000101"
+        ],
+        "idempotencyKey": "tables.schema-propose.example-0001",
+        "dryRun": true
+      },
+      "requiredScope": "ai",
+      "mcpToolName": "tables_schema_propose",
+      "cliExample": "supersuite action tables schema-propose '{\"baseId\":\"00000000-0000-4000-8000-000000000100\",\"goal\":\"Propose a minimal customer-health field set.\",\"evidenceIds\":[\"00000000-0000-4000-8000-000000000101\"],\"idempotencyKey\":\"tables.schema-propose.example-0001\",\"dryRun\":true}'",
+      "risk": "high",
+      "destructive": false,
+      "externalEffect": "model",
+      "idempotent": true,
+      "requiresApproval": true,
+      "supportsDryRun": true,
+      "minimumRole": "admin",
+      "backendMcpToolName": "tables_schema_propose",
+      "productMcpToolName": "schemadeck_schema_propose",
+      "productCliExample": "schemadeck action schema-propose '{\"baseId\":\"00000000-0000-4000-8000-000000000100\",\"goal\":\"Propose a minimal customer-health field set.\",\"evidenceIds\":[\"00000000-0000-4000-8000-000000000101\"],\"idempotencyKey\":\"tables.schema-propose.example-0001\",\"dryRun\":true}'"
+    }
+  ]
+}

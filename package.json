@@ -1,0 +1,36 @@
+{
+  "name": "@managed-oss/schemadeck",
+  "version": "0.1.0",
+  "description": "Governed schemas, typed rows, deterministic views, and cited proposals in one shared data fabric.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rohanarun/schemadeck.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rohanarun/schemadeck/issues"
+  },
+  "homepage": "https://github.com/rohanarun/schemadeck#readme",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "bin": {
+    "schemadeck": "src/cli.mjs",
+    "schemadeck-mcp": "src/mcp.mjs"
+  },
+  "files": [
+    "src",
+    "web",
+    "product-manifest.json",
+    "LICENSE",
+    "README.md",
+    "SECURITY.md",
+    "Dockerfile"
+  ],
+  "scripts": {
+    "start": "node src/web-server.mjs",
+    "test": "node --test --test-concurrency=1",
+    "verify": "node scripts/verify-manifest.mjs && node --test --test-concurrency=1"
+  }
+}
