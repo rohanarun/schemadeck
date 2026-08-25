@@ -1,0 +1,169 @@
+{
+  "schema": "managed-oss-functional-tutorial.v1",
+  "product": {
+    "slug": "schemadeck",
+    "name": "SchemaDeck",
+    "moduleId": "tables",
+    "version": "0.3.1",
+    "manifestSha256": "a6150a408ff7f8680a4bd5bc33a9b73e16835158c11b656f53de60c4f8392858"
+  },
+  "backend": {
+    "release": "v0.4.4",
+    "commit": "148abce99b91d8b9fdc8aa41c3f0eba283796db4"
+  },
+  "testedAt": "2026-08-25T22:02:42.519Z",
+  "browser": {
+    "engine": "Chromium",
+    "version": "151.0.7922.174",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "functionalProof": {
+    "action": {
+      "id": "base-create",
+      "title": "Create governed base",
+      "httpStatus": 200
+    },
+    "record": {
+      "id": "9242265f-7d4c-4f95-81ae-89dc4c6978f2",
+      "recordType": "table-base",
+      "title": "SchemaDeck tutorial workspace",
+      "state": "active"
+    },
+    "detail": {
+      "httpStatus": 200,
+      "matched": true
+    },
+    "assertions": [
+      "browser-authenticated-real-backend",
+      "guided-form-submitted",
+      "action-http-200",
+      "durable-record-returned",
+      "record-detail-http-200",
+      "exact-record-reopened-in-ui"
+    ]
+  },
+  "timeline": [
+    {
+      "stepId": "overview",
+      "observedLabel": "Meet SchemaDeck",
+      "observedFact": "Open the real SchemaDeck workspace and identify its core workflow.",
+      "startMs": 0,
+      "endMs": 2250
+    },
+    {
+      "stepId": "connect",
+      "observedLabel": "Connect the workspace",
+      "observedFact": "Authenticate this browser to the isolated shared backend and load durable records.",
+      "startMs": 2250,
+      "endMs": 5500
+    },
+    {
+      "stepId": "configure",
+      "observedLabel": "Create governed base",
+      "observedFact": "Complete the guided, contract-validated form for the product's primary workflow.",
+      "startMs": 5500,
+      "endMs": 8000
+    },
+    {
+      "stepId": "execute",
+      "observedLabel": "Run the real workflow",
+      "observedFact": "Submit the action to the shared backend and require a successful durable result.",
+      "startMs": 8000,
+      "endMs": 10500
+    },
+    {
+      "stepId": "inspect",
+      "observedLabel": "Inspect the saved record",
+      "observedFact": "Search the product record view and reopen the exact record returned by the workflow.",
+      "startMs": 10500,
+      "endMs": 17000
+    }
+  ],
+  "explanation": {
+    "title": "Creating a Governed Base in SchemaDeck",
+    "summary": "Connect to your SchemaDeck workspace, configure and execute the governed base creation workflow, and inspect the newly created durable record.",
+    "cues": [
+      {
+        "stepId": "overview",
+        "startMs": 0,
+        "endMs": 2250,
+        "label": "Meet SchemaDeck",
+        "subtitle": "Open the SchemaDeck workspace and review the core governed schema tools."
+      },
+      {
+        "stepId": "connect",
+        "startMs": 2250,
+        "endMs": 5500,
+        "label": "Connect the workspace",
+        "subtitle": "Connect to the shared backend to authenticate and load workspace records."
+      },
+      {
+        "stepId": "configure",
+        "startMs": 5500,
+        "endMs": 8000,
+        "label": "Configure governed base",
+        "subtitle": "Fill in base parameters including key, name, purpose, and idempotency key."
+      },
+      {
+        "stepId": "execute",
+        "startMs": 8000,
+        "endMs": 10500,
+        "label": "Run the workflow",
+        "subtitle": "Execute the create governed base workflow and verify successful creation."
+      },
+      {
+        "stepId": "inspect",
+        "startMs": 10500,
+        "endMs": 17000,
+        "label": "Inspect the saved record",
+        "subtitle": "Search records and inspect the details of the active table base."
+      }
+    ],
+    "generation": {
+      "provider": "OpenRouter",
+      "model": "google/gemini-3.7-flash",
+      "requestedModel": "google/gemini-3.7-flash",
+      "responseModel": "google/gemini-3.7-flash",
+      "responseId": "gen-1787695358-T6ZscG4WG0f66vQfXWNw",
+      "responseCreatedAt": "2026-08-25T22:02:38.000Z",
+      "input": {
+        "rawVideoSha256": "fdb504b8ab76c7c83a0d3b4ddeee18fddac64ad4c3b8f17e4438f123d85efb86",
+        "workflowFactsSha256": "579ee47b49142803c4df50a91e091be2e50ae1176f974a67e56edf32b4d5e913"
+      },
+      "usage": {
+        "promptTokens": 1562,
+        "completionTokens": 561,
+        "totalTokens": 2123
+      }
+    }
+  },
+  "video": {
+    "raw": {
+      "sha256": "fdb504b8ab76c7c83a0d3b4ddeee18fddac64ad4c3b8f17e4438f123d85efb86",
+      "codec": "h264",
+      "width": 1280,
+      "height": 720,
+      "durationSeconds": 17,
+      "sizeBytes": 330593
+    },
+    "final": {
+      "file": "docs/tutorial.mp4",
+      "sha256": "319283e977ab286f4698d6991b377cccc439a5975b15ba99eafd60f4a35a26b1",
+      "codec": "h264",
+      "width": 1280,
+      "height": 720,
+      "durationSeconds": 17,
+      "sizeBytes": 345903
+    },
+    "subtitles": {
+      "file": "docs/tutorial.srt",
+      "sha256": "b20e48efb4f5c8e01ff6847a22074d386569c7484aaf9055c5e0e2aebb8061d6",
+      "format": "SubRip"
+    },
+    "overlaysBurnedIn": true,
+    "silent": true
+  }
+}

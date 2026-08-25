@@ -1,0 +1,19 @@
+1
+00:00:00,000 --> 00:00:02,250
+Open the SchemaDeck workspace and review the core governed schema tools.
+
+2
+00:00:02,250 --> 00:00:05,500
+Connect to the shared backend to authenticate and load workspace records.
+
+3
+00:00:05,500 --> 00:00:08,000
+Fill in base parameters including key, name, purpose, and idempotency key.
+
+4
+00:00:08,000 --> 00:00:10,500
+Execute the create governed base workflow and verify successful creation.
+
+5
+00:00:10,500 --> 00:00:17,000
+Search records and inspect the details of the active table base.
